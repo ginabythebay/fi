@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-import main
+from fi import main
 
 
 def verify_src_name(name: str, expected_year: int, expected_who: str) -> None:
