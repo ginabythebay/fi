@@ -1,3 +1,5 @@
+#!/usr/bin/env -S uv run --script
+
 import dataclasses
 import sys
 
@@ -8,7 +10,7 @@ import time
 from pathlib import Path
 from datetime import date, datetime, timedelta, timezone
 
-from typing import Iterable, Tuple, Optional, Callable, List
+from typing import Iterable, Optional, Callable, List
 
 PDF_DIR = '~/Downloads'
 DST_DIR = '~/gdrive/finances/filed'
