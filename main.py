@@ -22,9 +22,13 @@ class SrcPdf:
     year: int
 
 def candidate_pdf(c: Path, earliest: float) -> bool:
-    if c.suffix != '.pdf':
+    suffix = c.suffix.lower()
+    if suffix != '.pdf':
         return False
     return c.stat().st_mtime >= earliest
+
+def file_cnt(cnt) -> str:
+    return '1 file' if cnt == 1 else '%d files' % cnt
 
 
 def src_pdfs(dir: str, days: int) -> Iterable[SrcPdf]:
@@ -84,10 +88,12 @@ def mv_dryrun(src_pdf: Path, dest_dir: Path) -> None:
 
 
 def mkdir_real(new_dir: Path) -> None:
+    click.echo(f'making {new_dir}')
     new_dir.mkdir()
 
 
 def mv_real(src_pdf: Path, dest_dir: Path) -> None:
+    click.echo(f'moving {src_pdf} -> {dest_dir / src_pdf.name}')
     src_pdf.rename(dest_dir / src_pdf.name)
 
 
@@ -103,6 +109,7 @@ class Filer:
 @click.option('--force', '-f', is_flag=True)
 @click.option('--dryrun', '-d', is_flag=True)
 def main(days: int, skip_invalid_names: bool, force: bool, dryrun) -> None:
+    start_time = time.time()
     filer = Filer(mkdir_dryrun, mv_dryrun) if dryrun else Filer(mkdir_real, mv_real)
     file_root = Path(DST_DIR).expanduser()
     if not file_root.is_dir():
@@ -118,6 +125,9 @@ def main(days: int, skip_invalid_names: bool, force: bool, dryrun) -> None:
         if not dest.is_dir():
             filer.mkdir_fn(dest)
         filer.mv_fn(pdf.pdf, dest)
+    elapsed_time = time.time() - start_time
+    click.echo('\n')
+    click.echo(f'moved {file_cnt(len(pdfs))} in {elapsed_time} seconds')
 
 
 def check_all_dests(file_root: Path,
