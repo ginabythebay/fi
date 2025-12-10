@@ -114,7 +114,6 @@ def main(days: int, skip_invalid_names: bool, force: bool, dryrun) -> None:
     file_root = Path(DST_DIR).expanduser()
     if not file_root.is_dir():
         die(f'{file_root} does not exist')
-    click.echo(click.style('Hello from fi!', fg='blue'))
     pdfs = list(src_pdfs(PDF_DIR, days))
     paths = [
         p.pdf for p in pdfs
